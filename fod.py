@@ -18,11 +18,14 @@ def mean_absolute_error(source, target, roi=None):
     return np.sum(np.abs(target - source), axis=1)
 
 
-def psnr(source, target, roi=None, pixel_max=2 ** 12):
-    mse = mean_squared_error(source, target, roi)
+def psnr(source, target, roi=None, pixel_max=1):
+    mse = mean_squared_error(
+        source, target, roi
+    )
+    mse_norm = mse / mse.size
     mse_mask = mse < 1.0e-10
 
-    psnr_image = 20 * np.log10(pixel_max / np.sqrt(mse))
+    psnr_image = 20 * np.log10(pixel_max / np.sqrt(mse_norm))
     psnr_image[mse_mask] = 100
     return psnr_image
 
