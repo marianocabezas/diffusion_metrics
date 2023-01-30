@@ -12,48 +12,6 @@ from scipy.stats import ttest_ind, mannwhitneyu, normaltest, ttest_rel, wilcoxon
 from scipy.stats import kendalltau, weightedtau
 
 
-def plot_correlation(
-        x, y, xlabel='Manual', ylabel='Model', verbose=0
-):
-    results = smapi.OLS(y, smapi.add_constant(x)).fit()
-
-    if verbose > 1:
-        print(results.summary())
-    plt.title(
-        u"R\u00b2 = {:5.3f} ({:5.3f}, {:5.3f})".format(
-            results.rsquared,
-            results.pvalues[0], results.pvalues[1]
-        )
-    )
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
-
-    sn.scatterplot(x=x, y=y)
-    x_plot = np.linspace(0, np.round(np.max(x)), 1000)
-    plt.plot(x_plot, x_plot * results.params[1] + results.params[0], 'k')
-
-    def metrics_connectomes(connectomes):
-        strength = np.mean([
-            [
-                strengths_und(conn) for conn in sub_data
-            ]
-            for sub_data in connectomes
-        ], axis=-1)
-        cpath = np.array([
-            [
-                charpath(conn)[0] for conn in sub_data
-            ]
-            for sub_data in connectomes
-        ])
-        efficiency = np.array([
-            [
-                efficiency_wei(conn) for conn in sub_data
-            ]
-            for sub_data in connectomes
-        ])
-        return strength, cpath, efficiency
-
-
 m = 84
 r, c = np.triu_indices(m, 1)
 
@@ -230,32 +188,6 @@ def significant_differences(pvalues, alpha):
     fwe_edges = np.where(fwe_mask)[0]
 
     return fdr_k, fwe_k, fdr_edges, fwe_edges
-
-
-def plot_conn_masks(pvalues, edge_list, pipe, prmin=0.95, prmax=1):
-    edges = len(pvalues)
-    nodes = int((np.sqrt(8 * edges + 1) + 1) / 2)
-    r, c = np.triu_indices(nodes, 1)
-
-    mask = conn_mask(edge_list, edges)
-    conn = np.zeros((nodes, nodes))
-    valid_pvalues = np.zeros(edges)
-    valid_pvalues[edge_list] = pvalues[edge_list]
-    conn[r, c] = valid_pvalues
-    conn[c, r] = valid_pvalues
-
-    plt.figure(figsize=(12, 5))
-    plt.subplot(1, 2, 1)
-    sn.heatmap(
-        mask, xticklabels=False, yticklabels=False,
-        square=True, cmap='jet', vmin=0, vmax=1
-    )
-    plt.ylabel(pipe)
-    plt.subplot(1, 2, 2)
-    sn.heatmap(
-        conn, xticklabels=False, yticklabels=False,
-        square=True, cmap='jet', vmin=prmin, vmax=prmax
-    )
 
 
 edges = len(pvalues[pre_pipe])

@@ -22,7 +22,7 @@ def psnr(source, target, roi=None):
     mse = mean_squared_error(source, target, roi)
     mse_mask = mse < 1.0e-10
 
-    psnr_image = 20 * np.log10(1 / np.sqrt(mse))
+    psnr_image = 20 * np.log10(np.max(source) / np.sqrt(mse))
     psnr_image[mse_mask] = 100
     return psnr_image
 

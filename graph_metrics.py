@@ -272,3 +272,25 @@ def strengths_und(CIJ):
         node strengths
     '''
     return np.sum(CIJ, axis=0)
+
+
+def metrics_connectomes(connectomes):
+    strength = np.mean([
+        [
+            strengths_und(conn) for conn in sub_data
+        ]
+        for sub_data in connectomes
+    ], axis=-1)
+    cpath = np.array([
+        [
+            charpath(conn)[0] for conn in sub_data
+        ]
+        for sub_data in connectomes
+    ])
+    efficiency = np.array([
+        [
+            efficiency_wei(conn) for conn in sub_data
+        ]
+        for sub_data in connectomes
+    ])
+    return strength, cpath, efficiency
