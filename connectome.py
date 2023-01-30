@@ -143,7 +143,7 @@ def triu_to_graph(triu):
     return graph
 
 
-def graph_tests(target, source, alpha):
+def graph_tests(target, source):
     relstr_t = []
     releff_t = []
     relcpath_t = []
