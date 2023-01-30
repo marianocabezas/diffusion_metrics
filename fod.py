@@ -22,6 +22,20 @@ def psnr(source, target, roi=None):
     mse = mean_squared_error(source, target, roi)
     mse_mask = mse < 1.0e-10
 
-    psnr_image = 20 * math.log10(PIXEL_MAX / math.sqrt(mse))
+    psnr_image = 20 * math.log10(1 / math.sqrt(mse))
     psnr_image[mse_mask] = 100
     return psnr_image
+
+
+def fod_comparison(
+    gt_fod, m_fods, roi=None
+):
+    mse_list = []
+    mae_list = []
+    psnr_list = []
+    for m_fod_i in m_fods:
+        mse_list.append(mean_squared_error(gt_fod, m_fod_i, roi))
+        mae_list.append(mean_absolute_error(gt_fod, m_fod_i, roi))
+        psnr_list.append(psnr(gt_fod, m_fod_i, roi))
+
+    return mse_list, mae_list, psnr_list
