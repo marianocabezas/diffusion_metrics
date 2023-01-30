@@ -1,5 +1,6 @@
 import numpy as np
 import time
+from copy import deepcopy
 from utils import print_progress
 
 
@@ -37,11 +38,31 @@ def fixel_comparison(
         gt_indices, gt_peak, gt_afd, gt_dir,
         m_indices, m_peak, m_afd, m_dir
 ):
-    afd_errors = [[] for _ in m_indices]
+    # afd_errors = [[] for m_index in m_indices]
     angular_errors = [0. for _ in m_indices]
-    extra_afd_errors = [[] for _ in m_indices]
-    peak_errors = [[] for _ in m_indices]
-    extra_peak_errors = [[] for _ in m_indices]
+    afd_errors = [
+        [
+            np.zeros(min(gt_i, m_i)) for gt_i, m_i in zip(gt_indices, m_index)
+        ]
+        for m_index in m_indices
+    ]
+    missing_afd_errors = [
+        [
+            np.zeros(gt_i - m_i) if gt_i > m_i else np.zeros(1)
+            for gt_i, m_i in zip(gt_indices, m_index)
+        ]
+        for m_index in m_indices
+    ]
+    extra_afd_errors = [
+        [
+            np.zeros(m_i - gt_i) if gt_i < m_i else np.zeros(1)
+            for gt_i, m_i in zip(gt_indices, m_index)
+        ]
+        for m_index in m_indices
+    ]
+    peak_errors = deepcopy(afd_errors)
+    missing_peak_errors = deepcopy(missing_afd_errors)
+    extra_peak_errors = deepcopy(extra_afd_errors)
     counts = np.zeros(len(m_indices), dtype=np.float64)
     all_indices = tuple([gt_indices] + m_indices)
     t_init = time.time()
@@ -73,24 +94,38 @@ def fixel_comparison(
             gt_peak_out = gt_peak_i[np.logical_not(mask)]
 
             true_idx = idx[mask]
+            extra_idx = idx[np.logical_not(mask)]
             true_afd = afd_ij[true_idx]
+            extra_afd = afd_ij[extra_idx]
             true_peak = peak_ij[true_idx]
+            extra_peak = afd_ij[extra_idx]
 
             m_afd_error = np.abs(true_afd - gt_afd_in).tolist()
-            afd_errors[m_j].extend(m_afd_error)
-            extra_afd_errors[m_j].extend(gt_afd_out.tolist())
-            extra_afd_errors[m_j].extend(m_afd_error)
+            afd_errors[m_j][index_i] = m_afd_error
+            # Need to check if tehre are extra errors
+            if not np.all(mask):
+                missing_afd_errors[m_j][index_i] = gt_afd_out.tolist()
+            if np.any(extra_idx):
+                extra_afd_errors[m_j][index_i] = extra_afd.tolist()
 
             m_peak_error = np.abs(true_peak - gt_peak_in).tolist()
-            peak_errors[m_j].extend(m_peak_error)
-            extra_peak_errors[m_j].extend(gt_peak_out.tolist())
-            extra_peak_errors[m_j].extend(m_peak_error)
+            peak_errors[m_j][index_i] = m_peak_error
+            # Need to check if tehre are extra errors
+            if not np.all(mask):
+                missing_peak_errors[m_j][index_i] = gt_peak_out.tolist()
+            if np.any(extra_idx):
+                extra_peak_errors[m_j][index_i] = extra_peak.tolist()
 
             angular_ej = angular_error[m_j][mask]
             fixels = len(angular_ej)
             old_count = counts[m_j]
             counts[m_j] += fixels
 
-            angular_errors[m_j] = (angular_errors[m_j] * old_count + np.sum(angular_ej)) / counts[m_j]
+            angular_errors[m_j] = (
+                angular_errors[m_j] * old_count + np.sum(angular_ej)
+            ) / counts[m_j]
 
-    return afd_errors, angular_errors, extra_afd_errors, peak_errors, extra_peak_errors
+    afd_tuple = (afd_errors, extra_afd_errors, missing_afd_errors)
+    peak_tuple = (peak_errors, extra_peak_errors, missing_peak_errors)
+
+    return angular_errors, afd_tuple, peak_tuple
