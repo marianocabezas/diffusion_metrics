@@ -42,21 +42,22 @@ def fixel_comparison(
     angular_errors = [0. for _ in m_indices]
     afd_errors = [
         [
-            np.zeros(min(gt_i, m_i)) for gt_i, m_i in zip(gt_indices, m_index)
+            np.zeros(min(gt_i, m_i))
+            for (gt_i, _), (m_i, _) in zip(gt_indices, m_index)
         ]
         for m_index in m_indices
     ]
     missing_afd_errors = [
         [
             np.zeros(gt_i - m_i) if gt_i > m_i else np.zeros(1)
-            for gt_i, m_i in zip(gt_indices, m_index)
+            for (gt_i, _), (m_i, _) in zip(gt_indices, m_index)
         ]
         for m_index in m_indices
     ]
     extra_afd_errors = [
         [
             np.zeros(m_i - gt_i) if gt_i < m_i else np.zeros(1)
-            for gt_i, m_i in zip(gt_indices, m_index)
+            for (gt_i, _), (m_i, _) in zip(gt_indices, m_index)
         ]
         for m_index in m_indices
     ]
