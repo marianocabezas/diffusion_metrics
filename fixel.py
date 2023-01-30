@@ -123,7 +123,7 @@ def fixel_comparison(
 
             angular_errors[m_j] = (
                 angular_errors[m_j] * old_count + np.sum(angular_ej)
-            ) / counts[m_j]
+            ) / counts[m_j] if counts[m_j] != 0 else 0
 
     afd_tuple = (afd_errors, extra_afd_errors, missing_afd_errors)
     peak_tuple = (peak_errors, extra_peak_errors, missing_peak_errors)
