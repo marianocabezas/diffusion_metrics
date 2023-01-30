@@ -1,14 +1,5 @@
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-import os
-import re
-import csv
 import numpy as np
-import pandas as pd
-import seaborn as sn
-import nibabel as nib
-import statsmodels.api as smapi
-from scipy.stats import ttest_ind, mannwhitneyu, normaltest, ttest_rel, wilcoxon
+from scipy.stats import ttest_rel, wilcoxon
 from scipy.stats import kendalltau, weightedtau
 
 from graph_metrics import strengths_und, efficiency_wei, charpath
@@ -37,7 +28,9 @@ def fdr_corrected_percentage(pvalues, alpha=0.01):
     """
     m = len(pvalues)
     k_all = np.array(list(range(1, m + 1)))
-    reject_list = np.where(pvalues <= (k_all * alpha / m))[0]
+    reject_list = np.where(
+        np.sort(pvalues) <= (k_all * alpha / m)
+    )[0]
     if len(reject_list) > 0:
         k = reject_list[-1]
     else:
@@ -84,7 +77,6 @@ def significant_edges_t(target, source, alpha=0.01):
         fwe_list.append(fwe)
         nocor_list.append(nocor)
         pvalues_list.append(pvalues)
-
 
     return pvalues_list, fdr_list, fwe_list, nocor_list
 
