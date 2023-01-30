@@ -94,7 +94,10 @@ def fixel_comparison(
             gt_peak_out = gt_peak_i[np.logical_not(mask)]
 
             true_idx = idx[mask]
-            extra_idx = idx[np.logical_not(mask)]
+            extra_idx = [
+                idx_k for idx_k in range(len(afd_ij))
+                if idx_k not in true_idx
+            ]
             true_afd = afd_ij[true_idx]
             extra_afd = afd_ij[extra_idx]
             true_peak = peak_ij[true_idx]
