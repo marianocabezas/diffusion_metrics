@@ -1,4 +1,5 @@
 import os
+import re
 import time
 import nibabel as nib
 from mrtrix import load_mrtrix
@@ -10,6 +11,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sn
 import statsmodels.api as smapi
+from connectome import conn_mask
 
 
 def generate_data_dict(
@@ -73,6 +75,21 @@ def generate_data_dict(
     return data_dict
 
 
+def find_file(name, dirname):
+    """
+
+    :param name:
+    :param dirname:
+    :return:
+    """
+    result = list(filter(
+        lambda x: not os.path.isdir(x) and re.search(name, x),
+        os.listdir(dirname)
+    ))
+
+    return os.path.join(dirname, result[0]) if result else None
+
+
 def load_image(image_path):
     if image_path.endswith('.mif.gz') or image_path.endswith('.mif'):
         image = load_mrtrix(image_path).data
@@ -85,7 +102,7 @@ def load_image(image_path):
     return image
 
 
-def get_fixel_data(
+def load_fixel_data(
     fixel_path, directions='directions.mif', index='index.mif', afd='afd.mif',
     peak='peak.mif'
 ):
@@ -100,6 +117,16 @@ def get_fixel_data(
     dir_matrix = load_mrtrix(dir_file).data.squeeze()
 
     return index_tuples, afd_vector, peak_vector, dir_matrix
+
+
+def load_connectome(csv_path):
+    conn = np.genfromtxt(
+        csv_path, delimiter=','
+    )
+
+    m = np.min(conn.shape)
+    r, c = np.triu_indices(m, 1)
+    return conn, conn[r, c]
 
 
 def time_to_string(time_val):

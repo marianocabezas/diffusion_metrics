@@ -31,14 +31,14 @@ def psnr(source, target, roi=None, pixel_max=1):
 
 
 def fod_comparison(
-    gt_fod, m_fods, roi=None
+    target_fod, source_fods, roi=None
 ):
     mse_list = []
     mae_list = []
     psnr_list = []
-    for m_fod_i in m_fods:
-        mse_list.append(mean_squared_error(gt_fod, m_fod_i, roi))
-        mae_list.append(mean_absolute_error(gt_fod, m_fod_i, roi))
-        psnr_list.append(psnr(gt_fod, m_fod_i, roi))
+    for m_fod_i in source_fods:
+        mse_list.append(mean_squared_error(target_fod, m_fod_i, roi))
+        mae_list.append(mean_absolute_error(target_fod, m_fod_i, roi))
+        psnr_list.append(psnr(target_fod, m_fod_i, roi))
 
     return mse_list, mae_list, psnr_list
