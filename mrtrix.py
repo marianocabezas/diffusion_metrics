@@ -6,9 +6,11 @@ Copyright (c) 2017 - Daan Christiaens (daan.christiaens@gmail.com)
 """
 
 
-import numpy as np
+import os
 import copy
 import gzip
+import shutil
+import numpy as np
 
 
 class Image (object):
@@ -181,10 +183,14 @@ class Image (object):
 
     def save(self, filename):
         """ Save image to MRtix .mif file. """
+        mif_filename = None
         if self.data is None:
             raise RuntimeError('Image data not set.')
         if not filename.endswith('.mif'):
-            raise IOError('only .mif file type supported for writing')
+            if filename.endswith('.mif.gz'):
+                mif_filename = '.'.join(filename.split('.')[:-1])
+            else:
+                raise IOError('only .mif or .mif.gz file type supported for writing')
         # write image header
         with open(filename, 'w', encoding='latin-1') as f:
             f.write('mrtrix image\n')
@@ -226,6 +232,12 @@ class Image (object):
         # write image data
         with open(filename, 'ab') as f:
             self.data.ravel(order='K').tofile(f)
+
+        if mif_filename is not None:
+            with open(mif_filename, 'rb') as f_in:
+                with gzip.open(filename, 'wb') as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+                    os.remove(mif_filename)
         return self
 
     def _layout_to_strides(self, layout, size, dtype):
