@@ -216,6 +216,7 @@ def ranking_metrics(target, source, alpha=0.01):
     m = target.shape[-1]
     bonf_alpha = alpha / m
 
+    # Comparison between the gold standard and other methods.
     inter_taus = []
     inter_wtaus = []
     inter_iwtaus = []
@@ -239,6 +240,11 @@ def ranking_metrics(target, source, alpha=0.01):
 
     inter_corr = [inter_taus, inter_wtaus, inter_iwtaus, inter_pvalues]
 
+    # Comparison between gold standard inviduals.
+    # This is a bit different from the previous set of metrics. Here we want
+    # to see how correlated are the rankings between subjects. Ideally, this
+    # should be lower than the correlation between methods. Otherwise, the
+    # "errors" would be higher than the real variability between individuals.
     intra_taus = []
     intra_wtaus = []
     intra_iwtaus = []
