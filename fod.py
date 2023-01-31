@@ -11,9 +11,11 @@ def mean_squared_error(target, source, roi=None):
 
 
 def mean_absolute_error(target, source, roi=None):
+    print(target.shape)
     if roi is not None:
         source = source[roi.astype(bool)]
         target = target[roi.astype(bool)]
+    print(source.shape)
 
     return np.sum(np.abs(target - source), axis=1)
 
@@ -30,9 +32,14 @@ def psnr(target, source, roi=None, pixel_max=1):
     return psnr_image
 
 
-def angular_correlation(target, source):
-    pred_fod = source[..., 1:]
-    gt_fod = target[..., 1:]
+def angular_correlation(target, source, roi=None):
+    if roi is None:
+        pred_fod = source[..., 1:]
+        gt_fod = target[..., 1:]
+    else:
+        pred_fod = source[roi.astype(bool), 1:]
+        gt_fod = target[roi.astype(bool), 1:]
+
     numerator = np.sum(pred_fod * gt_fod, axis=-1)
     denominator = np.sqrt(
         np.sum(pred_fod ** 2, axis=-1)
@@ -48,9 +55,11 @@ def fod_comparison(
     mse_list = []
     mae_list = []
     psnr_list = []
+    acc_list = []
     for m_fod_i in source_fods:
         mse_list.append(mean_squared_error(target_fod, m_fod_i, roi))
         mae_list.append(mean_absolute_error(target_fod, m_fod_i, roi))
         psnr_list.append(psnr(target_fod, m_fod_i, roi))
+        acc_list.append(angular_correlation(target_fod, m_fod_i, roi))
 
     return mse_list, mae_list, psnr_list
