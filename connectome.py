@@ -154,12 +154,12 @@ def graph_tests(target, source):
     gt_strength = np.mean([
         strengths_und(conn) for conn in target
     ], axis=-1)
-    gt_efficiency = np.mean([
+    gt_efficiency = np.array([
         efficiency_wei(conn) for conn in target
-    ], axis=-1)
-    gt_charpath = np.mean([
+    ])
+    gt_charpath = np.array([
         charpath(conn)[0] for conn in target
-    ], axis=-1)
+    ])
     for m in source:
         m_strength = np.mean([
             strengths_und(conn) for conn in m
