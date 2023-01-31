@@ -166,10 +166,10 @@ def graph_tests(target, source):
         ], axis=-1)
         m_efficiency = np.array([
             efficiency_wei(conn) for conn in m
-        ], axis=-1)
+        ])
         m_charpath = np.array([
             charpath(conn)[0] for conn in m
-        ], axis=-1)
+        ])
 
         _, pvalue = ttest_rel(gt_strength, m_strength)
         relstr_t.append(pvalue)
