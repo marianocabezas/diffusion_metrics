@@ -30,6 +30,14 @@ def psnr(source, target, roi=None, pixel_max=1):
     return psnr_image
 
 
+def angular_correlation(source, target):
+    pred_fod = source[:, :, :, 1:]
+    gt_fod = target[:, :, :, 1:]
+    numerator = np.sum(pred_fod * gt_fod, axis=-1)
+    denominator = np.sqrt(np.sum(pred_fod**2, axis=-1)) * np.sqrt(np.sum(gt_fod**2, axis=-1))
+    return numerator/denominator
+
+
 def fod_comparison(
     target_fod, source_fods, roi=None
 ):

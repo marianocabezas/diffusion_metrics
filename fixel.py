@@ -1,7 +1,6 @@
 import numpy as np
 import time
 from copy import deepcopy
-from fod import mean_absolute_error
 from utils import print_progress
 
 
@@ -159,12 +158,12 @@ def fixel_comparison(
             true_peak = peak_ij[true_idx]
             extra_peak = afd_ij[extra_idx]
 
-            afd_errors[m_j][index_i] = mean_absolute_error(
+            afd_errors[m_j][index_i] = np.sum(np.abs(
                 true_afd, gt_afd_in
-            )
-            peak_errors[m_j][index_i] = mean_absolute_error(
+            ))
+            peak_errors[m_j][index_i] = np.sum(np.abs(
                 true_peak, gt_peak_in
-            )
+            ))
 
             # Need to check if there are extra errors
             if not np.all(mask):
