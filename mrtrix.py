@@ -241,7 +241,7 @@ class Image (object):
         return self
 
     def _layout_to_strides(self, layout, size, dtype):
-        strides = [0 for l in layout]
+        strides = [0 for _ in layout]
         stride, offset = int(dtype.itemsize), 0
         for dim in sorted(range(len(layout)), key=lambda k: int(layout[k][1:])):
             if layout[dim][0] is '-':
