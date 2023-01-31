@@ -11,11 +11,9 @@ def mean_squared_error(target, source, roi=None):
 
 
 def mean_absolute_error(target, source, roi=None):
-    print(target.shape)
     if roi is not None:
         source = source[roi.astype(bool)]
         target = target[roi.astype(bool)]
-    print(source.shape)
 
     return np.sum(np.abs(target - source), axis=1)
 
@@ -62,4 +60,4 @@ def fod_comparison(
         psnr_list.append(psnr(target_fod, m_fod_i, roi))
         acc_list.append(angular_correlation(target_fod, m_fod_i, roi))
 
-    return mse_list, mae_list, psnr_list
+    return mse_list, mae_list, psnr_list, acc_list
