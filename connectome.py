@@ -164,10 +164,10 @@ def graph_tests(target, source):
         m_strength = np.mean([
             strengths_und(conn) for conn in m
         ], axis=-1)
-        m_efficiency = np.mean([
+        m_efficiency = np.array([
             efficiency_wei(conn) for conn in m
         ], axis=-1)
-        m_charpath = np.mean([
+        m_charpath = np.array([
             charpath(conn)[0] for conn in m
         ], axis=-1)
 
