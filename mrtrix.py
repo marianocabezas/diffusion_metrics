@@ -237,7 +237,7 @@ class Image (object):
             with open(mif_filename, 'rb') as f_in:
                 with gzip.open(filename, 'wb') as f_out:
                     shutil.copyfileobj(f_in, f_out)
-                    os.remove(mif_filename)
+            os.remove(mif_filename)
         return self
 
     def _layout_to_strides(self, layout, size, dtype):
