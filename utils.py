@@ -17,7 +17,7 @@ from connectome import conn_mask
 def generate_data_dict(
     main_path, gt, brain_name='{:}_brainmask.nii.gz',
     wm_name='{:}_wm_mask.mif.gz', fod_name='{:}_wmfod_norm.mif.gz',
-    fixel_name='fixels', connectome_name='{:}_connectome_DK_32dir.csv'
+    fixel_name='fixels', connectome_tag='connectome_DK'
 ):
     """
     A certain folder structure is assumed to construct the dictionary for now.
@@ -38,7 +38,7 @@ def generate_data_dict(
     :param wm_name:
     :param fod_name:
     :param fixel_name:
-    :param connectome_name:
+    :param connectome_tag:
     :return:
     """
     subjects = sorted(os.listdir(main_path))
@@ -63,8 +63,8 @@ def generate_data_dict(
                 'fixel': os.path.join(
                     sub_path, method, fixel_name
                 ),
-                'connectome': os.path.join(
-                    sub_path, method, connectome_name.format(sub)
+                'connectome': find_file(
+                    connectome_tag, os.path.join(sub_path, method)
                 ),
             }
             if method == gt:
