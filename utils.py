@@ -47,7 +47,7 @@ def generate_data_dict(
         if os.path.isdir(os.path.join(main_path, subjects[0], f))
     )
     data_dict = {}
-    for sub in subjects[:1]:
+    for sub in subjects:
         sub_path = os.path.join(main_path, sub)
         sub_dict = {
             'brain': os.path.join(sub_path, brain_name.format(sub)),
