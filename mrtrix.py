@@ -183,12 +183,13 @@ class Image (object):
 
     def save(self, filename):
         """ Save image to MRtix .mif file. """
-        mif_filename = None
+        gzip_filename = None
         if self.data is None:
             raise RuntimeError('Image data not set.')
         if not filename.endswith('.mif'):
             if filename.endswith('.mif.gz'):
-                mif_filename = '.'.join(filename.split('.')[:-1])
+                gzip_filename = filename
+                filename = '.'.join(filename.split('.')[:-1])
             else:
                 raise IOError('only .mif or .mif.gz file type supported for writing')
         # write image header
@@ -233,11 +234,11 @@ class Image (object):
         with open(filename, 'ab') as f:
             self.data.ravel(order='K').tofile(f)
 
-        if mif_filename is not None:
-            with open(mif_filename, 'rb') as f_in:
-                with gzip.open(filename, 'wb') as f_out:
+        if gzip_filename is not None:
+            with open(filename, 'rb') as f_in:
+                with gzip.open(gzip_filename, 'wb') as f_out:
                     shutil.copyfileobj(f_in, f_out)
-            os.remove(mif_filename)
+            os.remove(filename)
         return self
 
     def _layout_to_strides(self, layout, size, dtype):
