@@ -161,6 +161,7 @@ def print_progress(prefix='', step=0, n_steps=1, t_init=None):
     percent = 25 * (step + 1) // n_steps
     progress_s = ''.join(['█'] * percent)
     remainder_s = ''.join([' '] * (25 - percent))
+    print(' '.join([' '] * 300), end='\r')
     print(
         '\033[K{:} [{:}{:}] {:06d}/{:06d} - {:05.2f}% {:}'.format(
             prefix, progress_s, remainder_s,
