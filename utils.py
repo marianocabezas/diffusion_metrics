@@ -119,11 +119,14 @@ def load_fixel_data(
     return index_tuples, afd_vector, peak_vector, dir_matrix
 
 
-def load_connectome(csv_path):
+def load_connectome(csv_path, dk_atlas=True):
     conn = np.genfromtxt(
         csv_path, delimiter=','
     )
-
+    if dk_atlas:
+        exclude_nodes = [1, 31, 32, 50, 80, 81]
+    else:
+        exclude_nodes = []
     m = np.min(conn.shape)
     r, c = np.triu_indices(m, 1)
     return conn, conn[r, c]
