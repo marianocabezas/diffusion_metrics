@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.stats import ttest_rel, wilcoxon
+from scipy.stats import ttest_rel, wilcoxon, mannwhitneyu, ttest_ind
 from scipy.stats import kendalltau, weightedtau
 
 from graph_metrics import strengths_und, efficiency_wei, charpath
@@ -81,6 +81,35 @@ def significant_edges_t(target, source, alpha=0.01):
     return pvalues_list, fdr_list, fwe_list, nocor_list
 
 
+def significant_edges_tind(target, source, alpha=0.01):
+    """
+    Function to check significantly different edges (no check for which is
+     higher).
+    :param target:
+    :param source:
+    :param alpha:
+    :return:
+    """
+
+    fdr_list = []
+    fwe_list = []
+    nocor_list = []
+    pvalues_list = []
+    for m in source:
+        _, pvalues = ttest_ind(target, m, axis=0)
+        novar_mask = np.isnan(pvalues)
+        pvalues[novar_mask] = 1
+
+        fdr, fwe, nocor = pvalue_percentages(pvalues, alpha)
+
+        fdr_list.append(fdr)
+        fwe_list.append(fwe)
+        nocor_list.append(nocor)
+        pvalues_list.append(pvalues)
+
+    return pvalues_list, fdr_list, fwe_list, nocor_list
+
+
 def significant_edges_w(target, source, alpha=0.01):
     """
     Function to check significantly different edges (no check for which is
@@ -100,6 +129,35 @@ def significant_edges_w(target, source, alpha=0.01):
             wilcoxon(gs_i, pipe_i, 'zsplit')[1]
             for gs_i, pipe_i in zip(target.transpose(), m.transpose())
         ])
+        novar_mask = np.isnan(pvalues)
+        pvalues[novar_mask] = 1
+
+        fdr, fwe, nocor = pvalue_percentages(pvalues, alpha)
+
+        fdr_list.append(fdr)
+        fwe_list.append(fwe)
+        nocor_list.append(nocor)
+        pvalues_list.append(pvalues)
+
+    return pvalues_list, fdr_list, fwe_list, nocor_list
+
+
+def significant_edges_wind(target, source, alpha=0.01):
+    """
+    Function to check significantly different edges (no check for which is
+     higher).
+    :param target:
+    :param source:
+    :param alpha:
+    :return:
+    """
+
+    fdr_list = []
+    fwe_list = []
+    nocor_list = []
+    pvalues_list = []
+    for m in source:
+        _, pvalues = mannwhitneyu(target, m, axis=0)
         novar_mask = np.isnan(pvalues)
         pvalues[novar_mask] = 1
 
