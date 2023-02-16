@@ -44,7 +44,9 @@ def angular_correlation(target, source, roi=None):
     ) * np.sqrt(
         np.sum(gt_fod ** 2, axis=-1)
     )
-    return numerator/denominator
+    acc = numerator/denominator
+    acc[np.isnan(acc)] = 0
+    return acc
 
 
 def fod_comparison(
