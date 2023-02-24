@@ -7,7 +7,7 @@ def mean_squared_error(target, source, roi=None):
         source = source[roi.astype(bool)]
         target = target[roi.astype(bool)]
 
-    return np.sum((target - source) ** 2, axis=1)
+    return np.sum((target - source) ** 2, axis=-1)
 
 
 def mean_absolute_error(target, source, roi=None):
@@ -15,7 +15,7 @@ def mean_absolute_error(target, source, roi=None):
         source = source[roi.astype(bool)]
         target = target[roi.astype(bool)]
 
-    return np.sum(np.abs(target - source), axis=1)
+    return np.sum(np.abs(target - source), axis=-1)
 
 
 def psnr(target, source, roi=None, pixel_max=1):
