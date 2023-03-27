@@ -4,17 +4,22 @@ from dipy.io import read_bvals_bvecs
 from dipy.core.gradients import gradient_table_from_bvals_bvecs
 
 
-def kenStone(X, k, metric='euclidean'):
+def kenStone(X, k, random=False, metric='euclidean'):
     # Number of samples
     n = len(X)
 
     # Pair-wise distance matrix
     dist = metrics.pairwise_distances(X, metric=metric, n_jobs=-1)
 
-    # Get the first two samples
-    i0, i1 = np.unravel_index(np.argmax(dist, axis=None), dist.shape)
-    selected = set([i0, i1])
-    k -= 2
+    # Get the first samples
+    if random:
+        i0 = np.random.randint(n)
+        selected = set([i0])
+        k -= 1
+    else:
+        i0, i1 = np.unravel_index(np.argmax(dist, axis=None), dist.shape)
+        selected = set([i0, i1])
+        k -= 2
 
     # Iterate to find the rest
     minj = i0
