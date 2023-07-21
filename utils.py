@@ -220,3 +220,10 @@ def plot_conn_masks(pvalues, edge_list, pipe, prmin=0.95, prmax=1):
         conn, xticklabels=False, yticklabels=False,
         square=True, cmap='jet', vmin=prmin, vmax=prmax
     )
+
+
+def select_nodes(graph, nodes):
+    vector_list = []
+    for n in nodes:
+        vector_list.append(np.concatenate([graph[n, :n], graph[n, n + 1:]]))
+    return np.array(vector_list)
