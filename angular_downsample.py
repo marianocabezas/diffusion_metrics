@@ -114,9 +114,9 @@ def main():
                 index_list.extend(index_i.tolist())
                 bval_list.extend(bvals_i.tolist())
                 bvec_list.extend(bvecs_i)
+                print(bvecs_i)
             lr_index = np.array(index_list)
             lr_bvals = np.array(bval_list)
-            print(bvec_list)
             lr_bvecs = np.concatenate(bvec_list)
         else:
             if len(bval) != len(directions):
