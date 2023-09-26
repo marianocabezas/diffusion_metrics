@@ -69,7 +69,7 @@ def main():
         if not isinstance(bval, list) or len(bval) == 1:
             if isinstance(bval, list):
                 bval = bval[0]
-            if isinstance(directions, list):
+            if isinstance(directions, list) and len(directions) > 1:
                 directions = directions[0]
                 print(
                     'Warning: Only {:} directions will be extracted'.format(
