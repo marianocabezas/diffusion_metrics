@@ -66,7 +66,9 @@ def main():
         bvals = old_grad[:, -1]
         bvecs = old_grad[:, :-1]
 
-        if not isinstance(bval, list):
+        if not isinstance(bval, list) or len(bval) == 1:
+            if isinstance(bval, list):
+                bval = bval[0]
             if isinstance(directions, list):
                 directions = directions[0]
                 print(
@@ -86,7 +88,9 @@ def main():
             lr_index = np.array(lr_index.tolist())
             lr_bvals = np.array([0] + lr_bvals.tolist())
             lr_bvecs = np.concatenate([np.zeros((1, 3)), lr_bvecs])
-        elif not isinstance(directions, list):
+        elif not isinstance(directions, list) or len(directions) == 1:
+            if isinstance(directions, list):
+                directions = directions[0]
             print(
                 'Warning: {:} directions will be extracted '
                 'for each bval ([{:}])'.format(
@@ -116,7 +120,7 @@ def main():
         else:
             if len(bval) != len(directions):
                 print(
-                    'Warning: The numbe of bvals ({:})'
+                    'Warning: The number of bvals ({:})'
                     'and directions ({:}) do not match. '
                     'Using shortest list length.'.format(
                         len(bval), len(directions)
