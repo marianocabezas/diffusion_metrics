@@ -96,14 +96,14 @@ def main():
 
             print(
                 'Downsampling {:d} directions (B = [{:}] ± {:d})'.format(
-                    directions, ', '.join([str(bval) for bval in bvals]),
+                    directions, ', '.join([str(bval_i) for bval_i in bval]),
                     bval_range
                 )
             )
             index_list = []
             bval_list = [0]
             bvec_list = [np.zeros((1, 3))]
-            for bval_i in bvals:
+            for bval_i in bval:
                 bvecs_i, bvals_i, index_i, b0_index = extract_single_shell(
                     bvals, bvecs, bval_i, bval_range, directions
                 )
@@ -126,14 +126,14 @@ def main():
             print(
                 'Downsampling [{:}] directions (B = [{:}] ± {:d})'.format(
                     ', '.join([str(dir_i) for dir_i in directions]),
-                    ', '.join([str(bval) for bval in bvals]),
+                    ', '.join([str(bval_i) for bval_i in bval]),
                     bval_range
                 )
             )
             index_list = []
             bval_list = [0]
             bvec_list = [np.zeros((1, 3))]
-            for bval_i, dir_i in zip(bvals, directions):
+            for bval_i, dir_i in zip(bval, directions):
                 bvecs_i, bvals_i, index_i, b0_index = extract_single_shell(
                     bvals, bvecs, bval_i, bval_range, dir_i
                 )
