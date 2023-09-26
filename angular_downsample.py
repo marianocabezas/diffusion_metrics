@@ -94,7 +94,7 @@ def main():
             print(
                 'Warning: {:} directions will be extracted '
                 'for each bval ([{:}])'.format(
-                    directions, ', '.join([str(bval) for bval in bvals])
+                    directions, ', '.join([str(bval_i) for bval_i in bval])
                 )
             )
 
@@ -116,6 +116,7 @@ def main():
                 bvec_list.extend(bvecs_i)
             lr_index = np.array(index_list)
             lr_bvals = np.array(bval_list)
+            print(bvec_list)
             lr_bvecs = np.concatenate(bvec_list)
         else:
             if len(bval) != len(directions):
