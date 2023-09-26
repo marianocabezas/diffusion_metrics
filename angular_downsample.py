@@ -66,10 +66,6 @@ def main():
         bvals = old_grad[:, -1]
         bvecs = old_grad[:, :-1]
 
-        print('Downsampling {:d} directions (B = {:d} ± {:d})'.format(
-            directions, bval, bval_range
-        ))
-
         if not isinstance(bval, list):
             if isinstance(directions, list):
                 directions = directions[0]
@@ -78,6 +74,12 @@ def main():
                         directions
                     )
                 )
+
+            print(
+                'Downsampling {:d} directions (B = {:d} ± {:d})'.format(
+                    directions, bval, bval_range
+                )
+            )
             lr_bvecs, lr_bvals, lr_index, b0_index = extract_single_shell(
                 bvals, bvecs, bval, bval_range, directions
             )
@@ -89,6 +91,13 @@ def main():
                 'Warning: {:} directions will be extracted '
                 'for each bval ([{:}])'.format(
                     directions, ', '.join([str(bval) for bval in bvals])
+                )
+            )
+
+            print(
+                'Downsampling {:d} directions (B = [{:}] ± {:d})'.format(
+                    directions, ', '.join([str(bval) for bval in bvals]),
+                    bval_range
                 )
             )
             index_list = []
@@ -113,19 +122,27 @@ def main():
                         len(bval), len(directions)
                     )
                 )
-                index_list = []
-                bval_list = [0]
-                bvec_list = [np.zeros((1, 3))]
-                for bval_i, dir_i in zip(bvals, directions):
-                    bvecs_i, bvals_i, index_i, b0_index = extract_single_shell(
-                        bvals, bvecs, bval_i, bval_range, dir_i
-                    )
-                    index_list.extend(index_i.tolist())
-                    bval_list.extend(bvals_i.tolist())
-                    bvec_list.extend(bvecs_i)
-                lr_index = np.array(index_list)
-                lr_bvals = np.array(bval_list)
-                lr_bvecs = np.concatenate(bvec_list)
+
+            print(
+                'Downsampling [{:}] directions (B = [{:}] ± {:d})'.format(
+                    ', '.join([str(dir_i) for dir_i in directions]),
+                    ', '.join([str(bval) for bval in bvals]),
+                    bval_range
+                )
+            )
+            index_list = []
+            bval_list = [0]
+            bvec_list = [np.zeros((1, 3))]
+            for bval_i, dir_i in zip(bvals, directions):
+                bvecs_i, bvals_i, index_i, b0_index = extract_single_shell(
+                    bvals, bvecs, bval_i, bval_range, dir_i
+                )
+                index_list.extend(index_i.tolist())
+                bval_list.extend(bvals_i.tolist())
+                bvec_list.extend(bvecs_i)
+            lr_index = np.array(index_list)
+            lr_bvals = np.array(bval_list)
+            lr_bvecs = np.concatenate(bvec_list)
 
         new_grad = np.concatenate([lr_bvecs, lr_bvals.reshape(-1, 1)], axis=-1)
 
